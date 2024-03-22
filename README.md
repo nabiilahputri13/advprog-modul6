@@ -112,6 +112,94 @@
    
 4. [**Commit 4 Reflection notes**] The slow request simulation shows that when we open two browser windows: one for http://127.0.0.1:7878/ and the other for http://127.0.0.1:7878/sleep and enter the / URI a few times, as before, it respond quickly. But if we enter /sleep and then load /, we’ll see that / waits until sleep has slept for its full 5 seconds before loading. We need to implement thread pool to avoid requests backing up behind a slow request.
    
-5. 
-   
+5. [**Commit 5 Reflection notes**] 
+   A ThreadPool struct is introduced to manage a pool of worker threads. It contains a vector of worker threads and a channel for sending tasks to the worker threads.
+    ```
+    use std::sync::{Arc, Mutex};
+    use std::thread;
+    use std::sync::mpsc;
+    
+    pub struct ThreadPool {
+        workers: Vec<Worker>,
+        sender: mpsc::Sender<Job>,
+    }
+    
+    struct Worker {
+        id: usize,
+        thread: Option<thread::JoinHandle<()>>,
+    }
+    
+    type Job = Box<dyn FnOnce() + Send + 'static>;
+    
+    impl ThreadPool {
+        pub fn new(size: usize) -> ThreadPool {
+            assert!(size > 0);
+    
+            let (sender, receiver) = mpsc::channel();
+            let receiver = Arc::new(Mutex::new(receiver));
+            let mut workers = Vec::with_capacity(size);
+    
+            for id in 0..size {
+                workers.push(Worker::new(id, Arc::clone(&receiver)));
+            }
+    
+            ThreadPool { workers, sender }
+        }
+    
+        pub fn execute<F>(&self, f: F)
+        where
+            F: FnOnce() + Send + 'static,
+        {
+            let job = Box::new(f);
+            self.sender.send(job).unwrap();
+        }
+        }
+    ```
+    
+    Each worker thread listens for tasks to execute from a shared channel.When a task is received, the worker thread executes it.
+    ```
+    impl Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+        let thread = thread::spawn(move || loop {
+            let job = receiver.lock().unwrap().recv().unwrap();
+            job();
+        });
+
+        Worker {
+            id,
+            thread: Some(thread),
+        }
+    }
+    }
+    ```
+
+    Tasks are represented as closures (FnOnce closures) that capture any necessary data. The execute method of the ThreadPool struct is used to submit tasks to the thread pool for execution. When a task is submitted, it is sent through the channel to be picked up by an available worker thread.
+    ```
+    pub fn execute<F>(&self, f: F)
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        let job = Box::new(f);
+        self.sender.send(job).unwrap();
+    }
+    ```
+
+    A mechanism for gracefully shutting down the thread pool is implemented. When the ThreadPool struct is dropped, it signals to the worker threads to stop accepting new tasks and wait for any currently executing tasks to complete. This ensures that all tasks are completed before the threads are terminated.
+   ```
+   impl Drop for ThreadPool {
+        fn drop(&mut self) {
+            for _ in &mut self.workers {
+                self.sender.send(None).unwrap();
+            }
+    
+            for worker in &mut self.workers {
+                if let Some(thread) = worker.thread.take() {
+                    thread.join().unwrap();
+                }
+            }
+        }
+    }
+    ```
+
+
 
