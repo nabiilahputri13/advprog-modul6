@@ -1,6 +1,6 @@
 # Reflection - Tutorial 6 ｡⋆୨୧˚ 
 
-1. Simply the **handle_connection** method reads HTTP request line by line, stores it for further processing if neeeded, and prints out sentence for debugging.
+1. [**Commit 1 Reflection notes**] Simply the **handle_connection** method reads HTTP request line by line, stores it for further processing if neeeded, and prints out sentence for debugging.
 
     ```
     fn handle_connection(mut stream: TcpStream)
@@ -110,5 +110,8 @@
    <img width="1280" alt="Screenshot 2024-03-22 095615" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/d51c65b6-1d62-42f8-a5ce-e68011560722">
    [Commit 3 screen capture]
    
-4. slow request sleep2an
-5. yg multithread2 itu
+4. The slow request simulation shows that when we open two browser windows: one for http://127.0.0.1:7878/ and the other for http://127.0.0.1:7878/sleep and enter the / URI a few times, as before, it respond quickly. But if we enter /sleep and then load /, we’ll see that / waits until sleep has slept for its full 5 seconds before loading. We need to implement thread pool to avoid requests backing up behind a slow request.
+   
+5. 
+   
+
