@@ -1,4 +1,4 @@
-# Reflection - Tutorial 6
+# Reflection - Tutorial 6 ｡⋆୨୧˚ 
 
 1. Simply the **handle_connection** method reads HTTP request line by line, stores it for further processing if neeeded, and prints out sentence for debugging.
 
