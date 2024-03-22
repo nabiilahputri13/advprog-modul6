@@ -32,11 +32,33 @@ println!("Request: {:#?}", http_request);
 ```
 Lastly, it prints out the HTTP request stored in http_request vector for debugging purposes
 
-2. The new handle_connection
-   <img width="1280" alt="Screenshot 2024-03-22 094105" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/31535205-c67a-411d-ab1b-52ce567120b0">
+2. Basically, the new handle_connection generates a HTTP response with fixed status line **HTTP/1.1 200 OK** and the content of the response is from **hello.html**.
    
-4. You better do up to the refactoring one, and you need to explain in your reflection notes, how
+   ```
+   let status_line = "HTTP/1.1 200 OK";
+   ```
+   This line defines a constant **status_line** with the value **HTTP/1.1 200 OK**
+
+    ```
+    let contents = fs::read_to_string("hello.html").unwrap();
+    ```
+    Read the contents of the file named **hello.html** into a string.
+
+    ```
+    let length = contents.len();
+    ```
+    This line calculates the length of the content read from "hello.html" using the len() method of the String type.
+
+    ```
+    stream.write_all(response.as_bytes()).unwrap();
+    ```
+    Finally, it writes the response string to the TCP stream using **write_all**. This function takes a byte slice as input, so we convert the response string to bytes using **as_bytes()**.
+    
+   <img width="1280" alt="Screenshot 2024-03-22 094105" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/31535205-c67a-411d-ab1b-52ce567120b0">
+   [Commit 2 screen capture]
+   
+3. You better do up to the refactoring one, and you need to explain in your reflection notes, how
 to split between response and why the refactoring is needed.
    <img width="1280" alt="Screenshot 2024-03-22 095615" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/d51c65b6-1d62-42f8-a5ce-e68011560722">
-5. slow request sleep2an
-6. yg multithread2 itu
+4. slow request sleep2an
+5. yg multithread2 itu
