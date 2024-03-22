@@ -1,6 +1,6 @@
 # Reflection - Tutorial 6 ｡⋆୨୧˚ 
 
-1. [**Commit 1 Reflection notes**] Simply the **handle_connection** method reads HTTP request line by line, stores it for further processing if neeeded, and prints out sentence for debugging.
+1. [**Commit 1 Reflection notes**] Simply, the **handle_connection** method reads HTTP request line by line, stores it for further processing if neeeded, and prints out sentence for debugging.
 
     ```
     fn handle_connection(mut stream: TcpStream)
@@ -32,7 +32,7 @@
     ```
     Lastly, it prints out the HTTP request stored in http_request vector for debugging purposes
 
-2. Basically, the new handle_connection generates a HTTP response with fixed status line **HTTP/1.1 200 OK** and the content of the response is from **hello.html**.
+2. [**Commit 2 Reflection notes**] Basically, the new handle_connection generates a HTTP response with fixed status line **HTTP/1.1 200 OK** and the content of the response is from **hello.html**.
    
    ```
    let status_line = "HTTP/1.1 200 OK";
@@ -57,7 +57,7 @@
    <img width="1280" alt="Screenshot 2024-03-22 094105" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/31535205-c67a-411d-ab1b-52ce567120b0">
    [Commit 2 screen capture]
    
-3. In the modified **main.rs** in commit 3, **handle_connection** method is validating user request, if the request is for **/** it will return **hello.html**
+3. [**Commit 3 Reflection notes**] In the modified **main.rs** in commit 3, **handle_connection** method is validating user request, if the request is for **/** it will return **hello.html**
     ```
     if request_line == "GET / HTTP/1.1" {
         let status_line = "HTTP/1.1 200 OK";
@@ -110,7 +110,7 @@
    <img width="1280" alt="Screenshot 2024-03-22 095615" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/d51c65b6-1d62-42f8-a5ce-e68011560722">
    [Commit 3 screen capture]
    
-4. The slow request simulation shows that when we open two browser windows: one for http://127.0.0.1:7878/ and the other for http://127.0.0.1:7878/sleep and enter the / URI a few times, as before, it respond quickly. But if we enter /sleep and then load /, we’ll see that / waits until sleep has slept for its full 5 seconds before loading. We need to implement thread pool to avoid requests backing up behind a slow request.
+4. [**Commit 4 Reflection notes**] The slow request simulation shows that when we open two browser windows: one for http://127.0.0.1:7878/ and the other for http://127.0.0.1:7878/sleep and enter the / URI a few times, as before, it respond quickly. But if we enter /sleep and then load /, we’ll see that / waits until sleep has slept for its full 5 seconds before loading. We need to implement thread pool to avoid requests backing up behind a slow request.
    
 5. 
    
