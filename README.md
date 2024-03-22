@@ -57,8 +57,58 @@
    <img width="1280" alt="Screenshot 2024-03-22 094105" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/31535205-c67a-411d-ab1b-52ce567120b0">
    [Commit 2 screen capture]
    
-3. You better do up to the refactoring one, and you need to explain in your reflection notes, how
-to split between response and why the refactoring is needed.
+3. In the modified **main.rs** in commit 3, **handle_connection** method is validating user request, if the request is for **/** it will return **hello.html**
+    ```
+    if request_line == "GET / HTTP/1.1" {
+        let status_line = "HTTP/1.1 200 OK";
+        let contents = fs::read_to_string("hello.html").unwrap();
+        let length = contents.len();
+
+        let response = format!(
+            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+        );
+
+        stream.write_all(response.as_bytes()).unwrap();
+    }
+    ```
+    But if the user sends another request (aka bad) it will shows **404.html**
+    ```
+    else {
+        let status_line = "HTTP/1.1 404 NOT FOUND";
+        let contents = fs::read_to_string("404.html").unwrap();
+        let length = contents.len();
+
+        let response = format!(
+            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+        );
+
+        stream.write_all(response.as_bytes()).unwrap();
+    }
+    ```
+    Lastly, refactoring is needed because the **if** and **else** blocks have a lot of repetition. We can make separate **if** and **else** lines that assign the values of **status line** and **filename** to variables.
+   ```
+   fn handle_connection(mut stream: TcpStream) {
+    // --snip--
+
+    let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
+        ("HTTP/1.1 200 OK", "hello.html")
+    } else {
+        ("HTTP/1.1 404 NOT FOUND", "404.html")
+    };
+
+    let contents = fs::read_to_string(filename).unwrap();
+    let length = contents.len();
+
+    let response =
+        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+
+    stream.write_all(response.as_bytes()).unwrap();
+   }
+   ```
+   This way, it is easier to see the difference between the two cases, and it means we have only one place to update the code if we want to change how the file reading and response writing work.
+
    <img width="1280" alt="Screenshot 2024-03-22 095615" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/d51c65b6-1d62-42f8-a5ce-e68011560722">
+   [Commit 3 screen capture]
+   
 4. slow request sleep2an
 5. yg multithread2 itu
