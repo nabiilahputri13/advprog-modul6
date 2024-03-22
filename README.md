@@ -33,7 +33,7 @@ println!("Request: {:#?}", http_request);
 Lastly, it prints out the HTTP request stored in http_request vector for debugging purposes
 
 2. The new handle_connection
-   [Commit 2 screen capture](<img width="1280" alt="Screenshot 2024-03-22 094105" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/31535205-c67a-411d-ab1b-52ce567120b0">)
+   <img width="1280" alt="Screenshot 2024-03-22 094105" src="https://github.com/nabiilahputri13/my-first-repo/assets/124870275/31535205-c67a-411d-ab1b-52ce567120b0">
    
 4. You better do up to the refactoring one, and you need to explain in your reflection notes, how
 to split between response and why the refactoring is needed.
